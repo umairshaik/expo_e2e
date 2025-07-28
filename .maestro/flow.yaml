@@ -1,0 +1,14 @@
+appId: com.umair_shaik.myapp
+---
+- launchApp:
+      clearState: true
+# load all output constants saved in the setup file
+- runScript: ./setup.js
+# ListWithFetch screen flow
+- assertVisible:
+      id: ${output.screens.listWitchFetch.firstItemId}
+- scrollUntilVisible:
+      element:
+          id: ${output.screens.listWitchFetch.fifteenthItemId}
+      direction: 'DOWN'
+
