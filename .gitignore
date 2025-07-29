@@ -35,3 +35,8 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+# WireMock files
+wiremock/*.jar
+wiremock/*.pid
+wiremock/logs/
