@@ -28,4 +28,4 @@ console.log('🔍 Debug info:', {
   BASE_URL,
 });
 
-export { isTestEnvironment, BASE_URL }; 
+export { isTestEnvironment, BASE_URL };

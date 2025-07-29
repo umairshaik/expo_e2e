@@ -1,4 +1,4 @@
-appId: com.umair_shaik.myapp
+appId: com.umairshaik.myapp
 ---
 - launchApp:
       clearState: true

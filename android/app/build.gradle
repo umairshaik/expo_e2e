@@ -87,9 +87,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.umair_shaik.myapp'
+    namespace 'com.umairshaik.myapp'
     defaultConfig {
-        applicationId 'com.umair_shaik.myapp'
+        applicationId 'com.umairshaik.myapp'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

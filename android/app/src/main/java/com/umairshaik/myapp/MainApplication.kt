@@ -1,4 +1,4 @@
-package com.umair_shaik.myapp
+package com.umairshaik.myapp
 
 import android.app.Application
 import android.content.res.Configuration
