@@ -1,4 +1,4 @@
-import ListWithFetch from './ListWithFetch';
+import ListWithFetch from './components/ListWithFetch';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { SafeAreaView } from 'react-native';
 import { StyleSheet } from 'react-native';

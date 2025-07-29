@@ -6,7 +6,7 @@ import {
   waitForElementToBeRemoved,
   fireEvent,
 } from '@testing-library/react-native';
-import ListWithFetch from '../ListWithFetch';
+import ListWithFetch from '../src/components/ListWithFetch';
 import {server} from '../test/mocks/server';
 import {rest} from 'msw';
 import mockedApiResponse from '../test/mocks/mockedApiResponse.json';
