@@ -9,19 +9,16 @@ appId: com.umairshaik.myapp
 # Wait for the app to load and make the network request
 # Check if the first user container element appears (by ID)
 - extendedWaitUntil:
-    visible:
-        id: ${output.screens.listWitchFetch.firstItemId}
-    timeout: 15000
-
-# ✅ SUCCESS: App launches and loads data successfully
-# ✅ SUCCESS: MSW integration complete (works in tests, E2E uses real API)
-# ✅ SUCCESS: This test verifies the app functionality works correctly
+    visible: ${output.screens.listWitchFetch.mockedFirstItemName}
+    timeout: 10000
 
 # ListWithFetch screen flow - verify basic functionality
-- assertVisible:
-    id: ${output.screens.listWitchFetch.firstItemId}
+- assertVisible: ${output.screens.listWitchFetch.mockedFirstItemName}
 
-# Test scrolling to ensure data is loaded and app is functional
+# Verify we're using mocked data by checking for the specific first user from our mock
+- assertVisible:
+    text: "atuny0@sohu.com"
+
 - scrollUntilVisible:
     element:
         id: ${output.screens.listWitchFetch.fifteenthItemId}
