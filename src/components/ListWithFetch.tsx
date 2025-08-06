@@ -22,9 +22,16 @@ export default () => {
     const fetchData = async () => {
       setLoading(true);
       try {
+        console.log('🚀 Making API request to:', `${BASE_URL}/users`);
         const response = await axios.get(`${BASE_URL}/users`);
+        console.log('📦 Received response:', {
+          status: response.status,
+          userCount: response.data.users?.length,
+          firstUser: response.data.users?.[0]?.firstName + ' ' + response.data.users?.[0]?.lastName
+        });
         setUsersData(response.data.users);
       } catch (e) {
+        console.error('❌ API request failed:', e);
         setHasError(true);
       } finally {
         setLoading(false);

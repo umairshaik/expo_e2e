@@ -7,8 +7,7 @@ import {
   fireEvent,
 } from '@testing-library/react-native';
 import ListWithFetch from '../src/components/ListWithFetch';
-import {server} from '../test/mocks/server';
-import {rest} from 'msw';
+import { getTestMockAdapter } from '../test/setup/testMocking';
 import mockedApiResponse from '../test/mocks/mockedApiResponse.json';
 
 afterEach(cleanup);
@@ -43,11 +42,9 @@ test('displays images from the server', async () => {
 
 test('displays error upon error response from server', async () => {
   // Simulate an error response from the server
-  server.resetHandlers(
-    rest.get('https://dummyjson.com/users', (req, res, ctx) => {
-      return res(ctx.status(500));
-    }),
-  );
+  const mockAdapter = getTestMockAdapter();
+  mockAdapter.reset();
+  mockAdapter.onGet(/\/users$/).reply(500, { error: 'Server error' });
   // Render the component
   render(<ListWithFetch />);
 
@@ -61,12 +58,12 @@ test('displays error upon error response from server', async () => {
 
 test('displays mock data from JSON file successfully', async () => {
   // Override the default handler with mock data from JSON file
-  server.resetHandlers(
-    rest.get('https://dummyjson.com/users', (req, res, ctx) => {
-      console.log('----------- serving mock data from JSON file ----------');
-      return res(ctx.json(mockedApiResponse));
-    }),
-  );
+  const mockAdapter = getTestMockAdapter();
+  mockAdapter.reset();
+  mockAdapter.onGet(/\/users$/).reply(() => {
+    console.log('----------- serving mock data from JSON file ----------');
+    return [200, mockedApiResponse];
+  });
 
   // Render the component
   render(<ListWithFetch />);
@@ -90,12 +87,12 @@ test('displays mock data from JSON file successfully', async () => {
 
 test('validates all 30 users are loaded from JSON file', async () => {
   // Override the default handler with mock data from JSON file
-  server.resetHandlers(
-    rest.get('https://dummyjson.com/users', (req, res, ctx) => {
-      console.log('----------- serving full mock data to validate 30 users ----------');
-      return res(ctx.json(mockedApiResponse));
-    }),
-  );
+  const mockAdapter = getTestMockAdapter();
+  mockAdapter.reset();
+  mockAdapter.onGet(/\/users$/).reply(() => {
+    console.log('----------- serving full mock data to validate 30 users ----------');
+    return [200, mockedApiResponse];
+  });
 
   // Render the component
   const {UNSAFE_root} = render(<ListWithFetch />);
