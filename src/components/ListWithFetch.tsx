@@ -88,10 +88,7 @@ const renderUserItem = ({ item: { firstName, lastName, email, image, id, birthDa
 export default () => {
   const { users, loading, error } = useUserViewModel();
 
-  console.log('🎨 [ListWithFetch] Rendering with state:', { usersCount: users.length, loading, error });
-
   if (loading) {
-    console.log('🎨 [ListWithFetch] Rendering LOADING state');
     return (
       <YStack flex={1} justifyContent="center" alignItems="center">
         <YStack gap="$3" alignItems="center">
@@ -105,7 +102,6 @@ export default () => {
   }
 
   if (error) {
-    console.log('🎨 [ListWithFetch] Rendering ERROR state:', error);
     return (
       <Theme name="red">
         <YStack
@@ -137,9 +133,7 @@ export default () => {
     );
   }
 
-  // Use ScrollView on web, FlatList on mobile
   const isWeb = Platform.OS === 'web';
-  console.log('🎨 [ListWithFetch] Rendering SUCCESS state with', users.length, 'users on', isWeb ? 'WEB' : 'MOBILE');
 
   return (
     <YStack flex={1}>
