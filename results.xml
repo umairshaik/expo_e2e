@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuites>
+  <testsuite name="Test Suite" device="iPhone 15 Pro - iOS 18.1 - C858D24A-61DB-40B6-923A-FA927D210C85" tests="1" failures="1" time="1">
+    <testcase id="flow" name="flow" classname="flow" time="1" status="ERROR">
+      <failure>Unknown error</failure>
+    </testcase>
+  </testsuite>
+</testsuites>

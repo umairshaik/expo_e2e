@@ -1,20 +1,26 @@
-import ListWithFetch from './components/ListWithFetch';
+import React from 'react';
+import { TamaguiProvider, YStack } from 'tamagui';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { SafeAreaView } from 'react-native';
-import { StyleSheet } from 'react-native';
+import { Platform } from 'react-native';
+import tamaguiConfig from '../tamagui.config';
+import ListWithFetch from './components/ListWithFetch';
 
 export default function App() {
+  const content = (
+    <YStack flex={1} backgroundColor="$background" paddingTop={Platform.OS === 'web' ? '$0' : '$4'}>
+      <ListWithFetch />
+    </YStack>
+  );
+
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
-        <ListWithFetch />
-      </SafeAreaView>
-    </SafeAreaProvider>
+    <TamaguiProvider config={tamaguiConfig}>
+      {Platform.OS === 'web' ? (
+        content
+      ) : (
+        <SafeAreaProvider>
+          {content}
+        </SafeAreaProvider>
+      )}
+    </TamaguiProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});

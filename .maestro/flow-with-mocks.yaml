@@ -7,14 +7,13 @@ appId: com.umairshaik.myapp
 - runScript: ./setup.js
 
 # Wait for the app to load and make the network request
-# This should now use mocked data from WireMock
+# Check if the first user container element appears (by ID)
 - extendedWaitUntil:
-    visible: "Umair Medhurst"
+    visible: ${output.screens.listWitchFetch.mockedFirstItemName}
     timeout: 10000
 
-# ListWithFetch screen flow - should now use mocked data
-- assertVisible:
-    id: ${output.screens.listWitchFetch.firstItemId}
+# ListWithFetch screen flow - verify basic functionality
+- assertVisible: ${output.screens.listWitchFetch.mockedFirstItemName}
 
 # Verify we're using mocked data by checking for the specific first user from our mock
 - assertVisible:
@@ -23,4 +22,8 @@ appId: com.umairshaik.myapp
 - scrollUntilVisible:
     element:
         id: ${output.screens.listWitchFetch.fifteenthItemId}
-    direction: 'DOWN' 
+    direction: 'DOWN'
+
+# Final validation that we scrolled successfully  
+- assertVisible:
+    id: ${output.screens.listWitchFetch.fifteenthItemId} 

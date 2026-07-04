@@ -1,7 +1,15 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Image, StyleSheet, Text, View } from 'react-native';
-import axios from 'axios';
-import { BASE_URL } from '../config/environment';
+import React, { useCallback, useMemo } from 'react';
+import { Image, FlatList, ScrollView, Platform } from 'react-native';
+import {
+  YStack,
+  XStack,
+  Text,
+  Spinner,
+  Card,
+  Avatar,
+  Theme,
+} from 'tamagui';
+import { useUserViewModel } from '../viewmodels/UserViewModel';
 
 const AVATAR_SIZE = 68;
 
@@ -14,76 +22,159 @@ export interface IUser {
   birthDate: string;
 }
 
+const renderUserItem = ({ item: { firstName, lastName, email, image, id, birthDate } }: { item: IUser }) => (
+  <Card
+    key={id}
+    testID={`${id}-user-container`}
+    overflow="hidden"
+    marginHorizontal="$4"
+    marginVertical="$2"
+    padding="$4"
+    borderRadius="$4"
+    borderWidth={1}
+    borderColor="$borderColor"
+    backgroundColor="$card"
+    pressStyle={{
+      backgroundColor: '$cardHover',
+      transform: [{ scale: 0.98 }],
+    }}
+  >
+    <XStack gap="$4" alignItems="center" flex={1}>
+      <Avatar
+        circular
+        size={AVATAR_SIZE}
+        borderRadius={AVATAR_SIZE / 2}
+        borderWidth={2}
+        borderColor="$blue7"
+        overflow="hidden"
+      >
+        <Image
+          source={{ uri: image }}
+          style={{
+            width: AVATAR_SIZE,
+            height: AVATAR_SIZE,
+            borderRadius: AVATAR_SIZE / 2,
+          }}
+        />
+      </Avatar>
+
+      <YStack flex={1} gap="$1">
+        <Text
+          fontSize="$5"
+          fontWeight="600"
+          color="$color"
+          numberOfLines={1}
+        >
+          {firstName} {lastName}
+        </Text>
+        <Text
+          fontSize="$3"
+          color="$gray10"
+          numberOfLines={1}
+        >
+          {email}
+        </Text>
+        <Text
+          fontSize="$2"
+          color="$gray9"
+        >
+          {birthDate}
+        </Text>
+      </YStack>
+    </XStack>
+  </Card>
+);
+
 export default () => {
-  const [usersData, setUsersData] = useState<IUser[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [hasError, setHasError] = useState<boolean>(false);
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(`${BASE_URL}/users`);
-        setUsersData(response.data.users);
-      } catch (e) {
-        setHasError(true);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { users, loading, error } = useUserViewModel();
 
-    fetchData();
-  }, []);
+  console.log('🎨 [ListWithFetch] Rendering with state:', { usersCount: users.length, loading, error });
 
-  const handleRenderItem = useCallback(
-    ({ item: { firstName, lastName, email, image, id, birthDate } }: { item: IUser }) => (
-      <View style={styles.userContainer} testID={`${id}-user-container`}>
-        <View style={styles.avatarWrapper}>
-          <Image source={{ uri: image }} style={styles.image} />
-        </View>
-        <View style={styles.userInfoContainer}>
-          <Text>
-            {firstName} {lastName}
+  if (loading) {
+    console.log('🎨 [ListWithFetch] Rendering LOADING state');
+    return (
+      <YStack flex={1} justifyContent="center" alignItems="center">
+        <YStack gap="$3" alignItems="center">
+          <Spinner size="large" color="$blue10" />
+          <Text color="$gray11" fontSize="$4">
+            Loading users...
           </Text>
-          <Text>{email}</Text>
-          <Text>{birthDate}</Text>
-        </View>
-      </View>
-    ),
-    [],
-  );
+        </YStack>
+      </YStack>
+    );
+  }
+
+  if (error) {
+    console.log('🎨 [ListWithFetch] Rendering ERROR state:', error);
+    return (
+      <Theme name="red">
+        <YStack
+          padding="$4"
+          marginHorizontal="$4"
+          marginTop="$4"
+          borderRadius="$4"
+          backgroundColor="$red3"
+          borderColor="$red8"
+          borderWidth={1}
+          gap="$2"
+          testID="error-alert"
+        >
+          <Text
+            fontSize="$5"
+            fontWeight="600"
+            color="$red11"
+          >
+            ⚠️ Error Loading Data
+          </Text>
+          <Text
+            fontSize="$3"
+            color="$red10"
+          >
+            {error}
+          </Text>
+        </YStack>
+      </Theme>
+    );
+  }
+
+  // Use ScrollView on web, FlatList on mobile
+  const isWeb = Platform.OS === 'web';
+  console.log('🎨 [ListWithFetch] Rendering SUCCESS state with', users.length, 'users on', isWeb ? 'WEB' : 'MOBILE');
 
   return (
-    <View>
-      {loading && <ActivityIndicator color={'#000'} size={'large'} accessibilityLabel={'loader'} />}
-      {hasError && (
-        <View style={styles.errorContainer} accessibilityLabel={'alert'}>
-          <Text>Error oopsie!</Text>
-        </View>
+    <YStack flex={1}>
+      <YStack paddingHorizontal="$4" paddingVertical="$3" gap="$2">
+        <Text fontSize="$7" fontWeight="700" color="$color">
+          Users Directory
+        </Text>
+        <Text fontSize="$3" color="$gray11">
+          {users.length} {users.length === 1 ? 'user' : 'users'} found
+        </Text>
+      </YStack>
+
+      {isWeb ? (
+        <ScrollView testID="user-list" style={{ flex: 1 }}>
+          <YStack padding="$0" gap="$0">
+            {users.map((user) =>
+              renderUserItem({
+                item: user,
+                index: users.indexOf(user),
+              } as any)
+            )}
+          </YStack>
+        </ScrollView>
+      ) : (
+        <FlatList
+          data={users}
+          renderItem={renderUserItem}
+          keyExtractor={(item) => item.id}
+          testID="user-list"
+          scrollEnabled={true}
+          contentContainerStyle={{
+            paddingBottom: 20,
+          }}
+        />
       )}
-      <FlatList
-        data={usersData}
-        renderItem={handleRenderItem}
-        keyExtractor={item => item.id}
-        testID="user-list"
-      />
-    </View>
+    </YStack>
   );
 };
-
-const styles = StyleSheet.create({
-  errorContainer: { backgroundColor: '#C63939', padding: 16, borderRadius: 6 },
-  userContainer: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    padding: 16,
-    marginTop: 8,
-    marginBottom: 20,
-  },
-  avatarWrapper: {
-    backgroundColor: 'rgba(88,186,224,0.65)',
-    padding: 16,
-    borderRadius: AVATAR_SIZE,
-  },
-  userInfoContainer: { flex: 1, marginLeft: 16 },
-  image: { height: AVATAR_SIZE, width: AVATAR_SIZE },
-});
