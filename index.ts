@@ -4,7 +4,7 @@ import { enableApiMocking } from './src/utils/apiMocker';
 
 // Enable API mocking in development
 if (__DEV__) {
-  enableApiMocking();
+  // enableApiMocking();
 }
 
 // registerRootComponent calls AppRegistry.registerComponent('main', () => App);
