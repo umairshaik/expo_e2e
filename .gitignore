@@ -58,4 +58,4 @@ wiremock/logs/
 
 # Build artifacts
 results.xml
-
+.tamagui/tamagui.config.json
