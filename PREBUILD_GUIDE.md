@@ -64,7 +64,7 @@ npx expo prebuild --no-install
 
 ## Current Project Status
 
-✅ **Native folders generated**: You have both `android/` and `ios/` folders
+❌ **Native folders not generated**: Run `npx expo prebuild` (or `yarn prebuild`) to generate native projects (`android/`, `ios/`).
 ✅ **Configuration applied**: Your `app.json` settings are reflected in native projects
 ✅ **Dependencies configured**: React Native and Expo modules are properly set up
 

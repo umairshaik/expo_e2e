@@ -134,7 +134,7 @@ yarn prebuild --platform android
 yarn prebuild --platform ios
 ```
 
-**Current Status**: Native folders (`android/`, `ios/`) are generated and configured.
+**Current Status**: Native folders (`android/`, `ios/`) are not generated. Run `yarn prebuild` to create them.
 
 > 📖 See [PREBUILD_GUIDE.md](./PREBUILD_GUIDE.md) for detailed documentation
 

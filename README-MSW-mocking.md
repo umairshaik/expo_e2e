@@ -14,7 +14,7 @@
 
 ## Overview
 
-This project uses **Mock Service Worker (MSW)** for network layer mocking in both development and testing. MSW provides seamless API mocking by intercepting requests at the network level, offering a more realistic testing environment compared to traditional mocking approaches.
+This repository contains MSW support files (handlers & polyfills), however the active mocking strategy in this project currently uses axios-mock-adapter for tests and optionally for development. Tests are configured to use the axios adapter via `test/setup/testMocking.ts`. MSW handlers exist at `test/mocks/handlers.ts` but are not wired into Jest or the app by default. See the 'Configuration' section for how to enable or switch mocking strategies.
 
 ### Key Benefits
 
@@ -47,17 +47,17 @@ graph TB
 
 | Component | Purpose | Location |
 |-----------|---------|----------|
-| **MSW Handlers** | Request/response definitions | `test/mocks/handlers.ts` |
-| **Node Server** | Jest testing environment | `test/mocks/server.ts` |
-| **Native Server** | React Native runtime | `test/mocks/native-server.ts` |
+| **MSW Handlers** | Request/response definitions (present but not wired) | `test/mocks/handlers.ts` |
+| **Test Setup (axios)** | Jest testing mock adapters (axios-mock-adapter) | `test/setup/testMocking.ts` |
+| **Dev Mocking (axios)** | Optional dev mocking (disabled by default) | `src/utils/apiMocker.ts` |
 | **Mock Data** | Shared response data | `test/mocks/mockedApiResponse.json` |
-| **Polyfills** | React Native compatibility | `msw.polyfills.js` |
+| **Polyfills** | React Native compatibility (present, not auto-imported) | `msw.polyfills.js` |
 
 ## Quick Start
 
 ### 🎯 Development
 
-MSW is automatically enabled in development mode. Just start your app:
+Dev mocking is not enabled by default. The project includes axios-mock-adapter-based mocks for tests and optional dev mocking. To enable axios-based dev mocks, uncomment `enableApiMocking()` in `index.ts`. To use MSW instead, follow the 'Enabling MSW' guidance below.
 
 ```bash
 # Start the development server
@@ -165,14 +165,14 @@ rest.get('*/users', (req, res, ctx) => {
 
 ### Basic Test Setup
 
-MSW is automatically configured in `jest.setup.js`:
+Tests are configured in `jest.setup.js` to use the axios-mock-adapter test helpers:
 
 ```typescript
-import {server} from './test/mocks/server';
+import { setupTestMocking, teardownTestMocking, resetTestMocks } from './test/setup/testMocking';
 
-beforeAll(() => server.listen());
-afterAll(() => server.close());
-afterEach(() => server.resetHandlers());
+beforeAll(() => setupTestMocking());
+afterAll(() => teardownTestMocking());
+afterEach(() => resetTestMocks());
 ```
 
 ### Overriding Handlers in Tests
